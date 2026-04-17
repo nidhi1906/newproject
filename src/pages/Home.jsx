@@ -8,7 +8,7 @@ const Home = () => {
       <header className="nav-header">
         <Link to="/" className="logo">
           <Hexagon size={28} />
-          Nexus
+          <span className="logo-text">Nexus</span>
         </Link>
         <div style={{ display: 'flex', gap: '1rem' }}>
           <Link to="/login" className="btn btn-secondary">Log in</Link>

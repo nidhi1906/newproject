@@ -34,8 +34,9 @@ body::before {
   content: '';
   position: fixed;
   top: 0; left: 0; width: 100vw; height: 100vh;
-  background: radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.15), transparent 25%),
-              radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.15), transparent 25%);
+  background:
+    radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.15), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.15), transparent 25%);
   z-index: -1;
   pointer-events: none;
 }
@@ -51,7 +52,7 @@ a:hover {
   color: var(--primary-hover);
 }
 
-/* Glassmorphism utility */
+/* ── Glassmorphism card ───────────────────────────────────────── */
 .glass-panel {
   background: var(--surface);
   backdrop-filter: blur(12px);
@@ -61,17 +62,17 @@ a:hover {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
-/* Animations */
+/* ── Animations ───────────────────────────────────────────────── */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in {
   animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Form Styles */
+/* ── Form ─────────────────────────────────────────────────────── */
 .form-group {
   margin-bottom: 1.5rem;
   position: relative;
@@ -86,6 +87,20 @@ a:hover {
   transition: color 0.3s;
 }
 
+/* Icon sits inside the input — always rendered after the <input> in JSX
+   so we use absolute positioning driven purely by coordinates, not CSS sibling selectors */
+.input-icon {
+  position: absolute;
+  left: 0.75rem;
+  /* vertically centre inside the 48 px tall input that starts after the label */
+  bottom: 0.75rem;
+  color: var(--text-secondary);
+  width: 1.125rem;
+  height: 1.125rem;
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
 .form-input {
   width: 100%;
   padding: 0.75rem 1rem 0.75rem 2.5rem;
@@ -94,7 +109,13 @@ a:hover {
   border: 1px solid var(--surface-border);
   color: var(--text-primary);
   font-size: 1rem;
+  font-family: inherit;
   transition: all 0.3s ease;
+}
+
+.form-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
 }
 
 .form-input:focus {
@@ -104,22 +125,12 @@ a:hover {
   background: rgba(15, 23, 42, 0.8);
 }
 
-.input-icon {
-  position: absolute;
-  left: 0.75rem;
-  top: 2.2rem;
-  color: var(--text-secondary);
-  width: 1.25rem;
-  height: 1.25rem;
-  transition: color 0.3s ease;
-}
-
-.form-input:focus ~ .input-icon,
-.form-input:focus + .input-icon {
+/* Tint the icon when the input inside the same .form-group is focused */
+.form-group:focus-within .input-icon {
   color: var(--primary);
 }
 
-/* Button Styles */
+/* ── Buttons ──────────────────────────────────────────────────── */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -128,15 +139,17 @@ a:hover {
   border-radius: 0.75rem;
   font-weight: 600;
   font-size: 1rem;
+  font-family: inherit;
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
   gap: 0.5rem;
+  white-space: nowrap;
 }
 
 .btn-primary {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
-  color: white;
+  color: #fff;
   box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
 }
 
@@ -144,6 +157,7 @@ a:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
   text-decoration: none;
+  color: #fff;
 }
 
 .btn-primary:active {
@@ -159,19 +173,21 @@ a:hover {
 .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.05);
   text-decoration: none;
+  color: var(--text-primary);
 }
 
 .btn-full {
   width: 100%;
 }
 
-/* Layouts */
+/* ── Layouts ──────────────────────────────────────────────────── */
 .auth-layout {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  position: relative;
 }
 
 .auth-card {
@@ -185,12 +201,15 @@ a:hover {
   margin-bottom: 2rem;
 }
 
+/* FIX: gradient text used only on the <span> wrapper so the SVG icon colour is unaffected */
 .auth-title {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
+  color: var(--text-primary);
   background: linear-gradient(to right, #fff, #94a3b8);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -206,6 +225,7 @@ a:hover {
   color: var(--text-secondary);
 }
 
+/* ── Nav ──────────────────────────────────────────────────────── */
 .nav-header {
   position: absolute;
   top: 0;
@@ -215,20 +235,36 @@ a:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  z-index: 10;
 }
 
+/* FIX: logo — keep the SVG icon in a normal colour, only apply gradient text to the text node.
+   We achieve this by styling the logo as a flex container with normal colour,
+   and using a child <span> for the gradient text in JSX. */
 .logo {
   font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--primary);          /* fallback & icon colour */
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  text-decoration: none;
 }
 
+.logo:hover {
+  text-decoration: none;
+  color: var(--primary-hover);
+}
+
+.logo-text {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Hero ─────────────────────────────────────────────────────── */
 .hero-section {
   min-height: 100vh;
   display: flex;
@@ -240,12 +276,13 @@ a:hover {
 }
 
 .hero-title {
-  font-size: 4rem;
+  font-size: clamp(2.5rem, 6vw, 4rem);
   font-weight: 800;
   line-height: 1.1;
   margin-bottom: 1.5rem;
   background: linear-gradient(to bottom right, #fff, #94a3b8);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   max-width: 800px;
 }
@@ -255,14 +292,17 @@ a:hover {
   color: var(--text-secondary);
   margin-bottom: 2.5rem;
   max-width: 600px;
+  line-height: 1.6;
 }
 
 .hero-actions {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-/* Divider */
+/* ── Divider ──────────────────────────────────────────────────── */
 .divider {
   display: flex;
   align-items: center;
@@ -270,8 +310,10 @@ a:hover {
   margin: 1.5rem 0;
   color: var(--text-secondary);
   font-size: 0.875rem;
+  gap: 1rem;
 }
 
+/* FIX: always apply the lines — no need for :not(:empty) */
 .divider::before,
 .divider::after {
   content: '';
@@ -279,15 +321,7 @@ a:hover {
   border-bottom: 1px solid var(--surface-border);
 }
 
-.divider:not(:empty)::before {
-  margin-right: 1rem;
-}
-
-.divider:not(:empty)::after {
-  margin-left: 1rem;
-}
-
-/* Social Buttons */
+/* ── Social buttons ───────────────────────────────────────────── */
 .social-buttons {
   display: flex;
   gap: 1rem;
@@ -298,16 +332,18 @@ a:hover {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--surface-border);
   color: var(--text-primary);
-  padding: 0.6rem;
+  padding: 0.65rem;
   border-radius: 0.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .btn-social:hover {
   background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary);
+  color: var(--primary);
   transform: translateY(-2px);
 }

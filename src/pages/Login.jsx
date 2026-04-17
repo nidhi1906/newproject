@@ -22,7 +22,7 @@ const Login = () => {
         <div className="auth-header">
           <Link to="/" className="logo" style={{ justifyContent: 'center', marginBottom: '1.5rem' }}>
             <Hexagon size={32} />
-            Nexus
+            <span className="logo-text">Nexus</span>
           </Link>
           <h2 className="auth-title">Welcome back</h2>
           <p className="auth-subtitle">Log in to your account to continue</p>
